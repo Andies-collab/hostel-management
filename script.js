@@ -8,9 +8,10 @@ document.getElementById("loginForm")?.addEventListener("submit", async function(
 
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
+    const backendURL = "https://hostel-management-teal.vercel.app"; // ✅ Updated Backend URL
 
     try {
-        const response = await fetch("http://localhost:5000/api/login", {
+        const response = await fetch(`${backendURL}/api/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -34,6 +35,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async function(
 document.addEventListener("DOMContentLoaded", async function() {
     const user_id = localStorage.getItem("user_id");
     const roomSelect = document.getElementById("room_id");
+    const backendURL = "https://hostel-management-teal.vercel.app"; // ✅ Updated Backend URL
 
     if (!user_id) {
         console.warn("No user logged in. Booking ID won't auto-fill.");
@@ -45,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ✅ Load Available Rooms into Dropdown
     try {
-        const response = await fetch("http://localhost:5000/api/rooms/available");
+        const response = await fetch(`${backendURL}/api/rooms/available`);
         const rooms = await response.json();
 
         if (!rooms || rooms.length === 0) {
@@ -70,7 +72,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     // ✅ Fetch and Autofill Booking ID
     try {
-        const response = await fetch(`http://localhost:5000/api/bookings/latest?user_id=${user_id}`);
+        const response = await fetch(`${backendURL}/api/bookings/latest?user_id=${user_id}`);
         const booking = await response.json();
 
         if (booking.id) {
@@ -78,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         } else {
             console.warn("No recent booking found. Creating a new one...");
 
-            const newBookingResponse = await fetch("http://localhost:5000/api/bookings/new", {
+            const newBookingResponse = await fetch(`${backendURL}/api/bookings/new`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ user_id })
@@ -105,6 +107,7 @@ document.getElementById("bookingForm").addEventListener("submit", async function
     const room_id = document.getElementById("room_id").value;
     const check_in_date = document.getElementById("check_in_date").value;
     const check_out_date = document.getElementById("check_out_date").value;
+    const backendURL = "https://hostel-management-teal.vercel.app"; // ✅ Updated Backend URL
 
     if (!user_id || !room_id || !check_in_date || !check_out_date) {
         alert("All fields are required!");
@@ -112,7 +115,7 @@ document.getElementById("bookingForm").addEventListener("submit", async function
     }
 
     try {
-        const response = await fetch("http://localhost:5000/api/bookings", {
+        const response = await fetch(`${backendURL}/api/bookings`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ user_id, room_id, check_in_date, check_out_date })
@@ -133,6 +136,7 @@ document.getElementById("paymentForm").addEventListener("submit", async function
     const user_id = document.getElementById("user_id_payment").value.trim();
     const booking_id = document.getElementById("booking_id").value.trim();
     const amount = document.getElementById("amount").value.trim();
+    const backendURL = "https://hostel-management-teal.vercel.app"; // ✅ Updated Backend URL
 
     if (!user_id || !booking_id || !amount) {
         alert("All fields are required!");
@@ -140,7 +144,7 @@ document.getElementById("paymentForm").addEventListener("submit", async function
     }
 
     try {
-        const response = await fetch("http://localhost:5000/api/payments", {
+        const response = await fetch(`${backendURL}/api/payments`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ user_id, booking_id, amount })
@@ -164,4 +168,3 @@ document.getElementById("paymentForm").addEventListener("submit", async function
         alert("Something went wrong. Please try again.");
     }
 });
-
