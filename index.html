@@ -32,25 +32,26 @@
         <img src="room1.jpg" alt="Single Room" width="300">
         <img src="room2.jpeg" alt="Shared Room" width="300"> 
     </div>
-    <form id="bookingForm">
-        <input type="text" id="user_id" placeholder="Enter User ID" required>
-        <select id="room_id">
-            <option>Loading rooms...</option>
-        </select>
-        <input type="date" id="check_in_date" required>
-        <input type="date" id="check_out_date" required>
-        <button type="submit" onclick="buttonClick()">Book Room</button>
-    </form>
-    
-    
+    <h2>Book a Room</h2>
+<form id="bookingForm">
+    <input type="text" id="user_id" placeholder="User ID (auto-filled)" readonly required>
+    <select id="room_id">
+        <option>Loading rooms...</option>
+    </select>
+    <input type="date" id="check_in_date" required>
+    <input type="date" id="check_out_date" required>
+    <button type="submit">Book Room</button>
+</form>
+
     <h2>Confirm Your Payment</h2>
-    <form id="paymentForm">
-        <input type="text" id="user_id_payment" placeholder="Enter User ID" required>
-        <input type="text" id="booking_id" placeholder="Enter Booking ID" required>
-        <input type="text" id="transaction_id" placeholder="Enter Transaction ID manually or leave empty for auto-fill">
-        <input type="number" id="amount" placeholder="Enter Amount" required>
-        <button type="submit">Submit Payment</button>
-    </form>
+<form id="paymentForm">
+    <input type="text" id="user_id_payment" placeholder="User ID (auto-filled)" readonly required>
+    <input type="text" id="booking_id" placeholder="Enter Booking ID or auto-filled" required>
+    <input type="text" id="transaction_id" placeholder="Enter Transaction ID manually or leave empty for auto-fill">
+    <input type="number" id="amount" placeholder="Enter Amount" required>
+    <button type="submit">Submit Payment</button>
+</form>
+
     
     <script>
         document.addEventListener("DOMContentLoaded", function() {

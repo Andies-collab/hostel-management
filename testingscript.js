@@ -31,35 +31,31 @@ document.getElementById("loginForm")?.addEventListener("submit", async function(
         alert("Something went wrong. Please try again.");
     }
 });
-document.addEventListener("DOMContentLoaded", async () => {
-    const userId = localStorage.getItem("user_id");
 
-    if (userId) {
-        const userInput1 = document.getElementById("user_id");
-        const userInput2 = document.getElementById("user_id_payment");
+document.addEventListener("DOMContentLoaded", async function() {
+    const user_id = localStorage.getItem("user_id");
+    const roomSelect = document.getElementById("room_id");
+    const backendURL = "https://hostel-management-teal.vercel.app"; // ✅ Updated Backend URL
 
-        if (userInput1) userInput1.value = userId;
-        if (userInput2) userInput2.value = userId;
-    } else {
-        console.warn("No user_id found in localStorage. Please log in.");
+    if (!user_id) {
+        console.warn("No user logged in. Booking ID won't auto-fill.");
+        return;
     }
 
-    // ✅ STEP 2: Fetch and populate room dropdown
-    const roomSelect = document.getElementById("room_id");
-    const backendURL = "http://localhost:5000"; // Use your actual backend base URL
+    document.getElementById("user_id_payment").value = user_id;
+    document.getElementById("user_id").value = user_id; // ✅ Auto-Fill User ID in Forms
 
+    // ✅ Load Available Rooms into Dropdown
     try {
         const response = await fetch(`${backendURL}/api/rooms/available`);
         const rooms = await response.json();
 
-        console.log("🔍 Rooms fetched:", rooms);
-
         if (!rooms || rooms.length === 0) {
-            roomSelect.innerHTML = "<option>No rooms available</option>";
+            roomSelect.innerHTML = "<option>No rooms available</option>"; // ✅ Handle empty list
             return;
         }
 
-        roomSelect.innerHTML = "";
+        roomSelect.innerHTML = ""; // ✅ Clear previous options
 
         rooms.forEach(room => {
             const option = document.createElement("option");
@@ -68,14 +64,40 @@ document.addEventListener("DOMContentLoaded", async () => {
             roomSelect.appendChild(option);
         });
 
-        console.log("✅ Rooms added to dropdown.");
+        console.log("Rooms successfully added to dropdown.");
     } catch (error) {
-        console.error("❌ Error fetching rooms:", error);
+        console.error("Error fetching rooms:", error);
         roomSelect.innerHTML = "<option>Error loading rooms</option>";
     }
+
+    // ✅ Fetch and Autofill Booking ID
+    try {
+        const response = await fetch(`${backendURL}/api/bookings/latest?user_id=${user_id}`);
+        const booking = await response.json();
+
+        if (booking.id) {
+            document.getElementById("booking_id").value = booking.id; // ✅ Autofill Booking ID
+        } else {
+            console.warn("No recent booking found. Creating a new one...");
+
+            const newBookingResponse = await fetch(`${backendURL}/api/bookings/new`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ user_id })
+            });
+
+            const newBooking = await newBookingResponse.json();
+
+            if (newBooking.id) {
+                document.getElementById("booking_id").value = newBooking.id; // ✅ Assign new Booking ID
+            } else {
+                console.error("Failed to create a new booking.");
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching or creating booking:", error);
+    }
 });
-
-
 
 // ✅ Room Booking Request
 document.getElementById("bookingForm").addEventListener("submit", async function(event) {
